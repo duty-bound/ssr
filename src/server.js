@@ -1,7 +1,11 @@
-// NEXT: pg26: why is port 8081 not working? Check with the GitLab repo from pg 27
+// NEXT: Chapter V, pg 35
 
-import App from "./components/App"
 import React from 'react'
+import { Provider } from 'react-redux'
+import serialize from 'serialize-javascript'
+import createStore from './store'
+import App from "./components/App"
+import { setAge } from './reducers/person'
 
 const fs = require('fs')
 const path = require('path')
@@ -24,9 +28,15 @@ app.get('*', (req, res) => {
             console.log(err)
             res.status(404).send('Error: 404')
         }
-
-        const reactHtml = renderToString(<App />)
-        const html = data.replace('{{HTML}}', reactHtml)
+        
+        const store = createStore()
+        store.dispatch(setAge(75))
+        const reactHtml = renderToString(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        )
+        const html = data.replace('{{HTML}}', reactHtml).replace('{{INITIAL_STATE}}', serialize(store.getState(), { isJson: true }))
         res.status(200).send(html)
     })
 })
