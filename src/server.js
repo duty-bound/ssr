@@ -1,4 +1,4 @@
-// NEXT: Chapter V, pg 35
+// NEXT: Chapter V, pg 38
 
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -20,6 +20,16 @@ app.server = http.createServer(app)
 app.use('/static', express.static(path.resolve('build/static')))
 app.use('/main.css', express.static(path.resolve('build/main.css')))
 app.use('/bundle.js', express.static(path.resolve('build/bundle.js')))
+
+app.get('/api/friends', (req, res) => {
+    setTimeout(() => {
+        res.json({
+            "friends": [
+                'James', 'Eric', 'Olivia', 'Emma', 'Charlotte'
+            ]
+        })
+    }, 1000)
+})
 
 app.get('*', (req, res) => {
     const filePath = path.resolve('build', 'index.html')
