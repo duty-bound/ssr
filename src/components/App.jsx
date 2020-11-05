@@ -5,8 +5,10 @@ import { ageIncrement, ageDecrement, setAge, fetchFriends } from '../reducers/pe
 const App = ({ name, age, ageIncrement, ageDecrement, setAge, fetchFriends, friends, isLoading }) => {
     
     useEffect(() => {
+        if(!friends.length) {
         fetchFriends()
-    }, [])
+        }
+    }, [friends])
 
     const env = __isClientSide__ ? 'from client' : 'from server'
     return (

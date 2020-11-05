@@ -1,11 +1,11 @@
-// NEXT: Chapter V, pg 38
+// NEXT: Chapter VI, pg 41
 
 import React from 'react'
 import { Provider } from 'react-redux'
 import serialize from 'serialize-javascript'
 import createStore from './store'
 import App from "./components/App"
-import { setAge } from './reducers/person'
+import { setAge, fetchFriends } from './reducers/person'
 
 const fs = require('fs')
 const path = require('path')
@@ -22,13 +22,11 @@ app.use('/main.css', express.static(path.resolve('build/main.css')))
 app.use('/bundle.js', express.static(path.resolve('build/bundle.js')))
 
 app.get('/api/friends', (req, res) => {
-    setTimeout(() => {
         res.json({
             "friends": [
                 'James', 'Eric', 'Olivia', 'Emma', 'Charlotte'
             ]
         })
-    }, 1000)
 })
 
 app.get('*', (req, res) => {
@@ -40,14 +38,22 @@ app.get('*', (req, res) => {
         }
         
         const store = createStore()
-        store.dispatch(setAge(75))
-        const reactHtml = renderToString(
-            <Provider store={store}>
-                <App />
-            </Provider>
-        )
-        const html = data.replace('{{HTML}}', reactHtml).replace('{{INITIAL_STATE}}', serialize(store.getState(), { isJson: true }))
-        res.status(200).send(html)
+        const promises = [
+            store.dispatch(setAge(75)),
+            store.dispatch(fetchFriends())
+        ]
+        Promise
+            .all(promises)
+            .then(() => {
+                const reactHtml = renderToString(
+                    <Provider store={store}>
+                        <App />
+                    </Provider>
+                )
+                const html = data.replace('{{HTML}}', reactHtml).replace('{{INITIAL_STATE}}', serialize(store.getState(), { isJson: true }))
+                
+                res.status(200).send(html)
+            })
     })
 })
 
