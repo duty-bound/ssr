@@ -2,10 +2,11 @@
 
 import React from 'react'
 import { Provider } from 'react-redux'
+import { setAge, fetchFriends } from './reducers/person'
 import serialize from 'serialize-javascript'
+import { StaticRouter } from 'react-router-dom'
 import createStore from './store'
 import App from "./components/App"
-import { setAge, fetchFriends } from './reducers/person'
 
 const fs = require('fs')
 const path = require('path')
@@ -47,7 +48,9 @@ app.get('*', (req, res) => {
             .then(() => {
                 const reactHtml = renderToString(
                     <Provider store={store}>
-                        <App />
+                        <StaticRouter location={req.url}>
+                            <App />
+                        </StaticRouter>
                     </Provider>
                 )
                 const html = data.replace('{{HTML}}', reactHtml).replace('{{INITIAL_STATE}}', serialize(store.getState(), { isJson: true }))

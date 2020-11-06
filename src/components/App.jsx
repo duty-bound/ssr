@@ -1,6 +1,9 @@
 import React, { useEffect } from "react"
+import { renderRoutes } from "react-router-config"
 import { connect } from 'react-redux'
 import { ageIncrement, ageDecrement, setAge, fetchFriends } from '../reducers/person'
+import routes from '../routes'
+import MenuLink from './MenuLink'
 
 const App = ({ name, age, ageIncrement, ageDecrement, setAge, fetchFriends, friends, isLoading }) => {
     
@@ -22,7 +25,12 @@ const App = ({ name, age, ageIncrement, ageDecrement, setAge, fetchFriends, frie
                 <button onClick={ageIncrement}>older</button>
                 <button onClick={() => setAge(50)}>age = 50</button>
             </div>
-            <img src="/static/kitten.jpg" alt="kitten" />
+            <div>
+                {routes.map(route => (
+                    <MenuLink route={route} />
+                ))}
+            </div>
+            {renderRoutes(routes)}
         </>
     )
 }

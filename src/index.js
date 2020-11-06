@@ -1,19 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './components/App';
-import './index.scss';
-import { Provider } from 'react-redux';
-import createStore from './store';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import App from './components/App'
+import './index.scss'
+import { Provider } from 'react-redux'
+import createStore from './store'
 
-setTimeout(() => {
+const initialState = window.__INITIAL_STATE__ || {}
+const store = createStore(initialState)
 
-    const initialState = window.__INITIAL_STATE__ || {}
-    const store = createStore(initialState)
-    ReactDOM.hydrate(
-    <Provider store={store}>
+ReactDOM.hydrate(
+  <Provider store={store}>
+    <BrowserRouter>
       <App/>
-    </Provider>,
-    document.getElementById('root')
-  );
-
-}, 2000);
+    </BrowserRouter>
+  </Provider>,
+  document.getElementById('root')
+)
